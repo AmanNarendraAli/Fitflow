@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
+from django.db import transaction
 from django.contrib.auth import login
 from .forms import GymForm, OwnerSignupForm
 from .models import User
 
 # Create your views here.
+@transaction.atomic
 def register_owner(request):
     if request.method == 'POST':
         gym_form = GymForm(request.POST)
