@@ -1,9 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.db import transaction
-from django.contrib.auth import login
-from .forms import GymForm, OwnerSignupForm
+from django.contrib.auth import login, logout
+from .forms import GymForm, OwnerSignupForm, JoinGymForm
 from .models import User
-
+from django.contrib.auth.forms import AuthenticationForm
 # Create your views here.
 @transaction.atomic
 def register_owner(request):
@@ -26,3 +27,30 @@ def register_owner(request):
         'gym_form': gym_form,
         'user_form': owner_form
     })
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+def login_view(request):
+    if request.method=='POST':
+        form = AuthenticationForm(request,data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request,user)
+            return redirect('dashboard')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+        
+def join_gym(request):
+    if request.method == 'POST':
+        form = JoinGymForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user) # Log them in immediately
+            return redirect('dashboard')
+    else:
+        form = JoinGymForm()
+    return render(request, 'join_gym.html', {'form': form})

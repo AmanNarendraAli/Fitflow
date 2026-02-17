@@ -1,0 +1,11 @@
+{% load static %}
+
+<form method="post">
+    {% csrf_token %}
+    <h3>Gym Details</h3>
+    {{ gym_form.as_p }}
+    <hr>
+    <h3>Owner Details</h3>
+    {{ user_form.as_p }}
+    <button type="submit">Create Gym & Account</button>
+</form>

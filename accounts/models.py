@@ -1,14 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import random
+import string
 # Create your models here.
 class Gym(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    code = models.CharField(unique=True, max_length=10)
-    class Meta:
-        db_table = "Gym"
+    code = models.CharField(unique=True, max_length=6)
+    def save(self, *args, **kwargs): #overriding the save method to generate a random code
+        if not self.code:
+            # Keep trying until we find a code that isn't in the database
+            while True:
+                new_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+                if not Gym.objects.filter(code=new_code).exists():
+                    self.code = new_code
+                    break
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
 
@@ -27,7 +36,5 @@ class User(AbstractUser):
 
     role = models.CharField(max_length = 10, choices = ROLE_CHOICES, default = MEMBER) 
     gym = models.ForeignKey(Gym, on_delete = models.CASCADE, null = True, blank = True) #gym id is a foreign key in user table
-    class Meta:
-        db_table = "User"
     def __str__(self):
         return (f"{self.username} - {self.role}")
