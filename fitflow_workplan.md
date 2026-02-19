@@ -9,12 +9,9 @@ Goal: Build a **multi‑tenant** gym / fitness studio SaaS that is clearly more 
 ## 0) Repo + tooling setup (Day 0)
 
 ### Tasks
-- Create repo + virtualenv
-- Install core deps:
-  - `Django`
-  - `python-dotenv` (or `django-environ`)
-  - `django-crispy-forms` (optional) or use plain templates
-- Create project: `fitflow/` + app(s): `accounts`, `core`, `classes`, `billing` (you can start with fewer)
+- [x] Create repo + virtualenv
+- [x] Install core deps:
+- [x] Create project: `fitflow/` + app(s): `accounts`, `core`, `classes`, `billing` (you can start with fewer)
 
 ### Deliverables
 - Project runs locally
@@ -41,13 +38,13 @@ Goal: Build a **multi‑tenant** gym / fitness studio SaaS that is clearly more 
   - email as login (optional)
 
 ### Tasks
-- Create custom user model (do this early before migrations get heavy)
-- Sign up flow:
+- [x] Create custom user model (do this early before migrations get heavy)
+- [x] Sign up flow:
   - Create gym (owner creates gym + first owner account)
   - Join gym via code (members/staff join existing gym)
-- Role-based access helpers:
+- [x] Role-based access helpers:
   - Decorators / mixins like `@role_required("OWNER")`
-- Tenant safety:
+- [x] Tenant safety:
   - **Every query must filter by `request.user.gym`**
   - Add tenant-aware base queryset helpers (e.g., `GymQuerySetMixin`)
 
@@ -71,9 +68,9 @@ Goal: Build a **multi‑tenant** gym / fitness studio SaaS that is clearly more 
 - `MemberProfile`: `gym`, `user`, `phone`, `emergency_contact`
 
 ### Tasks
-- CRUD for Rooms (OWNER only)
-- CRUD for trainer/member profiles (OWNER/STAFF)
-- Admin dashboard scaffold:
+- [x] CRUD for Rooms (OWNER only)
+- [ ] CRUD for trainer/member profiles (OWNER/STAFF)
+- [ ] Admin dashboard scaffold:
   - “Today’s sessions”
   - “Upcoming sessions”
   - “Recent bookings”

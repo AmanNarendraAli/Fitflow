@@ -1,5 +1,9 @@
+{% load static %}
 <h2>Your Gym Rooms</h2>
+
+{% if request.user.role == 'OWNER' %}
 <a href="{% url 'room_create' %}">Add New Room</a>
+{% endif %}
 
 <ul>
     {% for room in rooms %}

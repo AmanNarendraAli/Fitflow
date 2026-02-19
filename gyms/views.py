@@ -7,7 +7,6 @@ from accounts.utils import GymQuerySetMixin, role_required
 from django.utils.decorators import method_decorator
 # Create your views here.
 
-@method_decorator(role_required(['OWNER', 'STAFF']), name='dispatch')
 class RoomListView(GymQuerySetMixin, ListView):
     model = Room
     template_name = 'room_list.html'
