@@ -4,6 +4,7 @@ from django.db import transaction
 from django.contrib.auth import login, logout
 from .forms import GymForm, OwnerSignupForm, JoinGymForm
 from .models import User
+from .utils import role_required
 from django.contrib.auth.forms import AuthenticationForm
 # Create your views here.
 @transaction.atomic
@@ -54,3 +55,9 @@ def join_gym(request):
     else:
         form = JoinGymForm()
     return render(request, 'join_gym.html', {'form': form})
+
+@login_required
+@role_required(['OWNER', 'STAFF', 'TRAINER', 'MEMBER'])
+def dashboard(request):
+    gym = request.user.gym 
+    return render(request, 'accounts/dashboard.html', {'gym': gym})
