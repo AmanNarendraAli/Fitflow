@@ -1,0 +1,13 @@
+<h2>Your Gym Rooms</h2>
+<a href="{% url 'room_create' %}">Add New Room</a>
+
+<ul>
+    {% for room in rooms %}
+    <li><strong>{{ room.name }}</strong> (Capacity: {{ room.capacity }})</li>
+    {% empty %}
+    <li>No rooms created yet.</li>
+    {% endfor %}
+</ul>
+
+<hr>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
