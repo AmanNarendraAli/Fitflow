@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm #to inherit the default user creation form but with our Model modifications
-from .models import Gym, User
+from .models import Gym, User, TrainerProfile, MemberProfile
 
 class GymForm(forms.ModelForm):
     class Meta:
@@ -33,4 +33,12 @@ class JoinGymForm(UserCreationForm):
             user.save()
         return user
 
+class TrainerProfileForm(forms.ModelForm):
+    class Meta:
+        model = TrainerProfile
+        fields = ['bio', 'specialties']
 
+class MemberProfileForm(forms.ModelForm):
+    class Meta:
+        model = MemberProfile
+        fields = ['phone', 'emergency_contact']

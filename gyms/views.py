@@ -16,7 +16,7 @@ class RoomListView(GymQuerySetMixin, ListView):
 class RoomCreateView(GymQuerySetMixin, CreateView):
     form_class = RoomForm
     template_name = 'room_form.html'
-    success_url = reverse_lazy('room_list')
+    success_url = reverse_lazy('room_list') #django's class-based version of render
     def form_valid(self, form):
         form.instance.gym = self.request.user.gym #sets gym in form to user's signed-in gym
         return super().form_valid(form) #automatically saves the form if valid

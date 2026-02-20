@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.contrib.auth import login, logout
-from .forms import GymForm, OwnerSignupForm, JoinGymForm
+from .forms import GymForm, OwnerSignupForm, JoinGymForm, MemberProfileForm, TrainerProfileForm
 from .models import User
 from .utils import role_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -59,5 +59,39 @@ def join_gym(request):
 @login_required
 @role_required(['OWNER', 'STAFF', 'TRAINER', 'MEMBER'])
 def dashboard(request):
-    gym = request.user.gym 
-    return render(request, 'accounts/dashboard.html', {'gym': gym})
+        gym = request.user.gym
+        rooms_count = gym.rooms.count()
+        members_count = User.objects.filter(gym=gym, role=User.MEMBER).count()
+        trainers_count = User.objects.filter(gym=gym, role=User.TRAINER).count()
+        return render(request, 'dashboard.html', {
+            'gym': gym,
+            'rooms_count': rooms_count,
+            'members_count': members_count,
+            'trainers_count': trainers_count
+        })
+
+@login_required
+@role_required(['OWNER', 'STAFF', 'TRAINER', 'MEMBER'])
+def TrainerProfileView(request):
+    profile = request.user.trainer_profile
+    if request.method=='POST':
+        form = TrainerProfileForm(request.POST,instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = TrainerProfileForm(instance=profile)
+    return render(request, 'trainer_profile.html', {'form': form})
+
+@login_required
+@role_required(['OWNER', 'STAFF', 'TRAINER', 'MEMBER'])
+def MemberProfileView(request):
+    profile = request.user.member_profile
+    if request.method=='POST':
+        form = MemberProfileForm(request.POST,instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = MemberProfileForm(instance=profile)
+    return render(request, 'member_profile.html', {'form': form})
