@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FitFlow{% endblock %}</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <div class="glow-accent" style="top: -10vw; left: -10vw;"></div>
+    <div class="glow-accent"
+        style="bottom: -10vw; right: -10vw; background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(11,15,25,0) 70%);">
+    </div>
+
+    <nav class="navbar">
+        <a href="{% url 'dashboard' %}" class="nav-brand">Fit<span>Flow</span></a>
+
+        <div class="nav-links">
+            {% if request.user.is_authenticated %}
+            {% if request.user.gym %}
+            <div class="nav-item-user">
+                <span>{{ request.user.gym.name }}</span>
+                {% if request.user.role %}
+                <span class="badge">{{ request.user.get_role_display }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            {% if request.user.role == 'OWNER' or request.user.role == 'STAFF' %}
+            <a href="{% url 'room_list' %}">Rooms</a>
+            {% endif %}
+
+            <form action="{% url 'logout' %}" method="post" class="inline-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register_owner' %}" class="btn btn-primary btn-sm">Register Gym</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="main-container">
+        {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="message-banner {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

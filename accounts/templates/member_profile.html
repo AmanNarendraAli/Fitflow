@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Create Room | FitFlow{% endblock %}
+{% block title %}Member Profile | FitFlow{% endblock %}
 
 {% block content %}
 <div class="mb-8">
-    <h1 class="mb-2">Create a New Room</h1>
-    <p class="text-secondary">Add a new space for your gym's classes and sessions.</p>
+    <h1 class="mb-2">Member Profile</h1>
+    <p class="text-secondary">Update your personal information and contact details.</p>
 </div>
 
 <div class="card" style="max-width: 600px;">
@@ -23,8 +23,8 @@
         </div>
         {% endfor %}
         <div class="flex gap-4 mt-4">
-            <button type="submit" class="btn btn-primary">Save Room</button>
-            <a href="{% url 'room_list' %}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-success">Save Profile</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancel</a>
         </div>
     </form>
 </div>

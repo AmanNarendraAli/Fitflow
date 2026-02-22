@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Gym Overview | FitFlow{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex justify-between items-center">
+    <div>
+        <h1>{{ gym.name }} Overview</h1>
+        <p class="text-secondary">Manage your facility details and staff roles.</p>
+    </div>
+    
+    <div style="text-align: right;">
+        <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 0.2rem;">Gym Join Code</p>
+        <div style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 8px; font-family: monospace; font-size: 1.25rem; letter-spacing: 2px; color: var(--accent-blue);">
+            {{ gym.code }}
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-2">
+    <!-- LEFT SIDE: GYM DETAILS -->
+    <div class="card">
+        <h3 class="mb-4">Gym Details</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+            <!-- This hidden input tells the view WHICH form was submitted -->
+            <input type="hidden" name="update_gym" value="1">
+            
+            {% for field in gym_form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    <!-- If they are staff, they can read it but can't edit it -->
+                    {% if request.user.role == 'OWNER' %}
+                        {{ field }}
+                    {% else %}
+                        <input type="text" class="form-control" value="{{ field.value }}" disabled>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            {% if request.user.role == 'OWNER' %}
+                <button type="submit" class="btn btn-primary" name="update_gym">Update Gym Info</button>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- RIGHT SIDE: STAFF & MEMBER ROLES -->
+
+    <div class="card">
+        <h3 class="mb-4">Member Roles</h3>
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="update_roles" value="1">
+            
+            <!-- CRITICAL: You MUST include the management_form for formsets to work -->
+            {{ formset.management_form }}
+            
+            <div style="max-height: 400px; overflow-y: auto;">
+                {% for form in formset %}
+                    <!-- We render the hidden fields (like user ID) -->
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    
+                    <div class="flex justify-between items-center mb-4 pb-4" style="border-bottom: 1px solid var(--border-color);">
+                        <div>
+                            <!-- Access the underlying User instance attached to this specific form row -->
+                            <strong>{{ form.instance.username }}</strong>
+                            <div class="text-secondary text-sm">{{ form.instance.email }}</div>
+                        </div>
+                        
+                        <div style="width: 150px;">
+                            {% if request.user.role == 'OWNER' and form.instance != request.user %}
+                                {{ form.role }}
+                            {% else %}
+                                <!-- Staff can only see the role, or Owner looking at themselves -->
+                                <span class="badge">{{ form.instance.get_role_display }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if request.user.role == 'OWNER' %}
+                <button type="submit" class="btn btn-success mt-4" name="update_roles">Save All Roles</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

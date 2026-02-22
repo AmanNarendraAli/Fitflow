@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.contrib.auth import login, logout
-from .forms import GymForm, OwnerSignupForm, JoinGymForm, MemberProfileForm, TrainerProfileForm
+from .forms import GymForm, OwnerSignupForm, JoinGymForm, MemberProfileForm, TrainerProfileForm, MemberRoleFormSet
 from .models import User
 from .utils import role_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -95,3 +95,54 @@ def MemberProfileView(request):
     else:
         form = MemberProfileForm(instance=profile)
     return render(request, 'member_profile.html', {'form': form})
+
+@login_required
+@role_required(['OWNER','STAFF'])
+@login_required
+@role_required(['OWNER','STAFF'])
+def manage_members(request):
+    gym = request.user.gym
+    # This is defining the queryset to be used so we don't repeat it
+    member_qs = User.objects.filter(gym=gym).order_by('username')
+    
+    if request.method == 'POST':
+        if 'update_gym' in request.POST and request.user.role == 'OWNER':
+            gym_form = GymForm(request.POST, instance=gym)
+            # CRITICAL: We must create an empty formset here so the page can still render if validation fails!
+            formset = MemberRoleFormSet(queryset=member_qs)
+            
+            if gym_form.is_valid():
+                gym_form.save()
+                return redirect('gym_overview')
+                
+        elif 'update_roles' in request.POST and request.user.role == 'OWNER':
+            # CRITICAL: We must create an empty gym_form here so the page can still render if validation fails!
+            gym_form = GymForm(instance=gym)
+            formset = MemberRoleFormSet(request.POST, queryset=member_qs)
+            
+            if formset.is_valid():
+                instances = formset.save(commit=False)
+                for instance in instances:
+                    instance.save()
+                return redirect('gym_overview')
+                
+    else:
+        # GET request - user just navigates to the page
+        gym_form = GymForm(instance=gym)
+        formset = MemberRoleFormSet(queryset=member_qs)
+        
+    # UNINDENT THIS LINE! 
+    # It must sit at the very bottom, completely outside of the if/else blocks.
+    # This acts as the safety net: if a form is invalid, it falls down here and renders the errors!
+    return render(request, 'gym_overview.html', {
+        'gym_form': gym_form,
+        'formset': formset,
+        'gym': gym
+    })
+
+
+def root_redirect(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    else:
+        return redirect('login')

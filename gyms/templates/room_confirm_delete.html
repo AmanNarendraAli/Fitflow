@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Delete Room | FitFlow{% endblock %}
+{% block content %}
+<div class="mb-8">
+    <h1>Delete Room</h1>
+    <p class="text-secondary">Are you sure you want to delete "{{ room.name }}"?</p>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <form method="post">
+        {% csrf_token %}
+        <p>This action cannot be undone.</p>
+        <div class="flex gap-4 mt-4">
+            <button type="submit" class="btn btn-danger">Yes, Delete Room</button>
+            <a href="{% url 'room_list' %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

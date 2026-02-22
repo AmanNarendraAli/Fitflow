@@ -1,7 +1,31 @@
-{% load static %}
-<h2>Join Gym</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Join Gym</button>
-</form>
+{% extends 'base.html' %}
+{% block title %}Join Gym | FitFlow{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="card auth-card text-center">
+        <h2 class="mb-2">Join a Gym</h2>
+        <p class="text-secondary mb-8">Enter the unique code to join your fitness community</p>
+
+        <form method="post" style="text-align: left;">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                <span class="helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                <span class="helptext" style="color: var(--accent-red);">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-success" style="width: 100%; margin-top: 1rem;">Join Gym</button>
+        </form>
+
+        <div class="mt-8 text-secondary">
+            Are you a gym owner? <a href="{% url 'register_owner' %}">Register your gym here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

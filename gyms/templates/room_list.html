@@ -1,17 +1,39 @@
-{% load static %}
-<h2>Your Gym Rooms</h2>
+{% extends 'base.html' %}
+{% block title %}Rooms | FitFlow{% endblock %}
 
-{% if request.user.role == 'OWNER' %}
-<a href="{% url 'room_create' %}">Add New Room</a>
-{% endif %}
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="mb-2">Gym Rooms</h1>
+        <p class="text-secondary">Manage rooms and capacities</p>
+    </div>
+    {% if request.user.role == 'OWNER' %}
+    <a href="{% url 'room_create' %}" class="btn btn-primary">Add New Room</a>
+    {% endif %}
+</div>
 
-<ul>
+<div class="grid grid-cols-3">
     {% for room in rooms %}
-    <li><strong>{{ room.name }}</strong> (Capacity: {{ room.capacity }})</li>
+    <div class="card">
+        <h3 class="mb-2" style="color: var(--accent-blue);">{{ room.name }}</h3>
+        <p class="text-secondary"><strong style="color: var(--text-primary);">Capacity:</strong> {{ room.capacity }}
+            people</p>
+        {% if request.user.role == 'OWNER' %}
+        <a href="{% url 'room_delete' room.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% endif %}
+    </div>
     {% empty %}
-    <li>No rooms created yet.</li>
+    <div class="card" style="grid-column: span 3; text-align: center; padding: 3rem;">
+        <h3 class="mb-2 text-secondary">No rooms created yet.</h3>
+        {% if request.user.role == 'OWNER' %}
+        <p class="mb-4">Get started by adding your first room.</p>
+        <a href="{% url 'room_create' %}" class="btn btn-outline">Add Room</a>
+        {% endif %}
+    </div>
     {% endfor %}
-</ul>
+</div>
 
-<hr>
-<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+<div class="mt-8">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline btn-sm">← Back to Dashboard</a>
+</div>
+{% endblock %}

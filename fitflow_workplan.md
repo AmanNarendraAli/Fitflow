@@ -69,7 +69,7 @@ Goal: Build a **multi‑tenant** gym / fitness studio SaaS that is clearly more 
 
 ### Tasks
 - [x] CRUD for Rooms (OWNER only)
-- [ ] CRUD for trainer/member profiles (OWNER/STAFF)
+- [x] CRUD for trainer/member profiles (OWNER/STAFF)
 - [ ] Admin dashboard scaffold:
   - “Today’s sessions”
   - “Upcoming sessions”

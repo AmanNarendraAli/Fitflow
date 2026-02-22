@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | FitFlow{% endblock %}
+{% block content %}
+<div class="mb-8 flex justify-between items-center">
+    <div>
+        <h1 class="mb-2">Hello, {{ request.user.username }}!</h1>
+        <p class="text-secondary">Here's your overview for {{ gym.name }}</p>
+    </div>
+    {% if request.user.role == 'OWNER' or request.user.role == 'STAFF' %}
+    <div style="text-align: right;">
+        <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 0.2rem;">Gym Join Code</p>
+        <div
+            style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 8px; font-family: monospace; font-size: 1.25rem; letter-spacing: 2px; color: var(--accent-blue);">
+            {{ gym.code }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-3 mb-8">
+    {% if request.user.role == 'OWNER' or request.user.role == 'STAFF' %}
+    <div class="card text-center">
+        <h3 class="text-secondary mb-2">Total Members</h3>
+        <div class="text-2xl" style="font-size: 3rem; color: var(--accent-blue); font-weight: 800;">{{ members_count }}
+        </div>
+        <p class="text-secondary mt-2" style="font-size: 0.85rem;">Active members in {{ gym.name }}</p>
+    </div>
+
+    <div class="card text-center">
+        <h3 class="text-secondary mb-2">Trainers</h3>
+        <div class="text-2xl" style="font-size: 3rem; color: var(--accent-green); font-weight: 800;">{{ trainers_count }}</div>
+        <p class="text-secondary mt-2" style="font-size: 0.85rem;">Active staff & trainers</p>
+    </div>
+
+    <div class="card text-center">
+        <h3 class="text-secondary mb-2">Rooms</h3>
+        <div class="text-2xl" style="font-size: 3rem; color: var(--accent-red); font-weight: 800;">{{ rooms_count }}
+        </div>
+        <a href="{% url 'room_list' %}" class="btn btn-outline btn-sm mt-4">Manage Rooms</a>
+    </div>
+    <div class="card">
+        <h3 class="mb-2">Gym Overview</h3>
+        <p class="text-secondary">Manage your facility details.</p>
+        <a href="{% url 'gym_overview' %}" class="btn btn-primary btn-sm">Manage Gym</a>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: span 3;">
+        <h3 class="mb-2">Your Schedule</h3>
+        <p class="text-secondary">Upcoming schedules and bookings will appear here.</p>
+        <div
+            style="padding: 2rem; border: 1px dashed var(--border-color); border-radius: 8px; text-align: center; margin-top: 1.5rem;">
+            <span style="color: var(--text-secondary);">No upcoming sessions scheduled.</span>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if request.user.role == 'TRAINER' %}
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="m-0">Trainer Profile</h3>
+        <a href="{% url 'trainerprof' %}" class="btn btn-primary btn-sm">Edit Profile</a>
+    </div>
+    <p class="text-secondary">Keep your profile updated so members know your specialties.</p>
+</div>
+{% elif request.user.role == 'MEMBER' %}
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="m-0">Member Profile</h3>
+        <a href="{% url 'userprof' %}" class="btn btn-primary btn-sm">Edit Profile</a>
+    </div>
+    <p class="text-secondary">Update your contact details and emergency contact.</p>
+</div>
+{% endif %}
+
+{% endblock %}

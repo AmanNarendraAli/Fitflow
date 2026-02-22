@@ -1,11 +1,52 @@
-{% load static %}
+{% extends 'base.html' %}
+{% block title %}Register Gym | FitFlow{% endblock %}
+{% block content %}
+<div class="auth-container" style="max-width: 600px;">
+    <div class="card auth-card text-center">
+        <h2 class="mb-2">Launch Your Gym</h2>
+        <p class="text-secondary mb-8">Set up your premium FitFlow environment and administrator account in one step.
+        </p>
 
-<form method="post">
-    {% csrf_token %}
-    <h3>Gym Details</h3>
-    {{ gym_form.as_p }}
-    <hr>
-    <h3>Owner Details</h3>
-    {{ user_form.as_p }}
-    <button type="submit">Create Gym & Account</button>
-</form>
+        <form method="post" style="text-align: left;">
+            {% csrf_token %}
+
+            <h3 class="mt-4 mb-4" style="color: var(--accent-blue);">1. Gym Details</h3>
+            {% for field in gym_form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                <span class="helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                <span class="helptext" style="color: var(--accent-red);">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <h3 class="mb-4" style="color: var(--accent-green);">2. Owner Details</h3>
+            {% for field in user_form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}
+                <span class="helptext">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                <span class="helptext" style="color: var(--accent-red);">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary"
+                style="width: 100%; margin-top: 2rem; padding: 1rem; font-size: 1.1rem;">Create Gym & Account</button>
+        </form>
+
+        <div class="mt-8 text-secondary">
+            Already have an account? <a href="{% url 'login' %}">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

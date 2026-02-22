@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm #to inherit the default user creation form but with our Model modifications
 from .models import Gym, User, TrainerProfile, MemberProfile
+from django.forms import modelformset_factory
 
+MemberRoleFormSet = modelformset_factory(User,fields=['role'],extra=0,widgets={'role': forms.Select(attrs={'class': 'form-control'})}) #we don't want blank rows, hence the extra = 0. this formset class allows us to manage multiple users at once
 class GymForm(forms.ModelForm):
     class Meta:
         model = Gym

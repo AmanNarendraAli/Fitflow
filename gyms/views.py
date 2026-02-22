@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DeleteView
 from .models import Room
 from .forms import RoomForm
 from accounts.utils import GymQuerySetMixin, role_required
@@ -20,4 +20,10 @@ class RoomCreateView(GymQuerySetMixin, CreateView):
     def form_valid(self, form):
         form.instance.gym = self.request.user.gym #sets gym in form to user's signed-in gym
         return super().form_valid(form) #automatically saves the form if valid
+
+@method_decorator(role_required(['OWNER']), name='dispatch')
+class RoomDeleteView(GymQuerySetMixin, DeleteView):
+    model = Room
+    template_name = 'room_confirm_delete.html'
+    success_url = reverse_lazy('room_list')
     
